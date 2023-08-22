@@ -48,7 +48,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
 
 ## Cluster Configuration
 
-1. Fetch the cluster configuration file from [this repository](https://github.com/ard-hmd/eksctl-cluster-config) and follow the installation instructions provided there.
+1. Fetch the cluster configuration file from [this repository](https://github.com/ard-hmd/eksctl-cluster-config#usage) and follow the installation instructions provided there.
 
 2. Once the cluster and node group are set up, verify the installation:
    ```bash
