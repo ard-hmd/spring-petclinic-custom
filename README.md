@@ -7,7 +7,7 @@ This project is a private fork of the [spring-petclinic-cloud](https://github.co
 - **Wavefront**: The Wavefront section in the Kubernetes deployment has been commented out to prevent its activation during deployment.
 - **Deployment and Deletion Script**: A script has been introduced to streamline both the deployment and deletion processes of the application.
 - **Service Directory Cleanup**: Directories of services that weren't utilized in the cloud-adapted version have been removed to simplify the project's structure.
-- **Script Update**: The scripts has been updated to build and push only the required Docker images to the registry.
+- **Scripts Update**: The scripts has been updated to build and push only the required Docker images to the registry.
 
 # Spring PetClinic on Kubernetes
 
