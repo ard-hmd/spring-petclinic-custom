@@ -1,7 +1,0 @@
-/home/ec2-user/spring-petclinic-custom/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/model/InitializeMySQLModel.java
-/home/ec2-user/spring-petclinic-custom/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/model/Visit.java
-/home/ec2-user/spring-petclinic-custom/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/VisitsServiceApplication.java
-/home/ec2-user/spring-petclinic-custom/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/model/VisitRepository.java
-/home/ec2-user/spring-petclinic-custom/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/web/VisitResource.java
-/home/ec2-user/spring-petclinic-custom/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/DiscoveryConfig.java
-/home/ec2-user/spring-petclinic-custom/spring-petclinic-visits-service/src/main/java/org/springframework/samples/petclinic/visits/security/InsecurityConfiguration.java
