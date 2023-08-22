@@ -18,6 +18,12 @@ else
     echo "Waiting for 5 seconds to ensure services are initialized..."
     sleep 5
 
+    echo "Adding bitnami helm repo"
+    helm repo add bitnami https://charts.bitnami.com/bitnami
+
+    echo "Updating helm repo"
+    helm repo update
+
     echo "Deploying MySQL for vets-db..."
     helm install vets-db-mysql bitnami/mysql --namespace spring-petclinic --set auth.database=service_instance_db
 
