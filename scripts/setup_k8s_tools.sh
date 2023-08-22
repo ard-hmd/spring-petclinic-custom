@@ -35,4 +35,4 @@ yum install java-11-amazon-corretto -y
 yum install java-11-amazon-corretto-devel -y
 
 # Install Git
-sudo yum install git
+yum install git
