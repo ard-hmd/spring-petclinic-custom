@@ -1,0 +1,4 @@
+spring-petclinic-api-gateway/target
+spring-petclinic-customers-service/target
+spring-petclinic-vets-service/target
+spring-petclinic-visits-service/target
