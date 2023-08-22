@@ -83,6 +83,8 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    ```bash
    aws configure
    ```
+   > **Security Tip:** Never share your AWS Access Key ID or Secret Access Key. Always keep them confidential.
+
    sample output:
    ```
    AWS Access Key ID [None]: AKIAUKD5JLKLLOZVDYFZ
@@ -159,6 +161,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    export REPOSITORY_PREFIX=<DOCKERHUB_LOGIN>
    mvn spring-boot:build-image -Pk8s -DREPOSITORY_PREFIX=${REPOSITORY_PREFIX}
    ```
+   > **Note:**  Replace placeholders like <DOCKERHUB_LOGIN> with your actual values before executing commands.
    sample output:
    ```
    [INFO]
@@ -204,6 +207,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    ```bash
    ./scripts/setup-k8s-resources.sh <REPOSITORY_PREFIX>
    ```
+   > **Note:**  Replace placeholders like <REPOSITORY_PREFIX> with your actual values before executing commands.
    sample output:
    ```
    [...]
@@ -266,6 +270,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    ```bash
    ./scripts/cleanup-k8s-resources.sh <REPOSITORY_PREFIX>
    ```
+   > **Note:**  Replace placeholders like <REPOSITORY_PREFIX> with your actual values before executing commands.
    sample output:
    ```
    [...]
@@ -278,8 +283,9 @@ Ensure all these prerequisites are installed on your machine. When creating the 
 
 1. Delete the entire EKS cluster
    ```bash
-   eksctl delete cluster --name <nom-du-cluster>
+   eksctl delete cluster --name <CLUSTER_NAME>
    ```
+   > **Note:**  Replace placeholders like <CLUSTER_NAME> with your actual values before executing commands.
    sample output:
    ```
    [...]
