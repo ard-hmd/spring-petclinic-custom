@@ -162,6 +162,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    mvn spring-boot:build-image -Pk8s -DREPOSITORY_PREFIX=${REPOSITORY_PREFIX}
    ```
    > **Note:**  Replace placeholders like <DOCKERHUB_LOGIN> with your actual values before executing commands.
+
    sample output:
    ```
    [INFO]
@@ -208,6 +209,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    ./scripts/setup-k8s-resources.sh <REPOSITORY_PREFIX>
    ```
    > **Note:**  Replace placeholders like <REPOSITORY_PREFIX> with your actual values before executing commands.
+
    sample output:
    ```
    [...]
@@ -271,6 +273,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    ./scripts/cleanup-k8s-resources.sh <REPOSITORY_PREFIX>
    ```
    > **Note:**  Replace placeholders like <REPOSITORY_PREFIX> with your actual values before executing commands.
+
    sample output:
    ```
    [...]
@@ -286,6 +289,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    eksctl delete cluster --name <CLUSTER_NAME>
    ```
    > **Note:**  Replace placeholders like <CLUSTER_NAME> with your actual values before executing commands.
+
    sample output:
    ```
    [...]
