@@ -26,7 +26,7 @@ Before you begin, ensure you have the following prerequisites installed on your 
 | java       | Popular programming language.                 | [Guide](https://linux.how2shout.com/how-to-install-java-on-amazon-linux-2023/)                                 |
 | git        | Distributed version control system.           | [Guide](https://git-scm.com/download/linux)                                                                    |
 
-Ensure all these prerequisites are installed on your machine. When creating the client AMI, you can use the script from [this link](https://github.com/ard-hmd/spring-petclinic-custom/blob/3f6c0fd26308561df623c605dc87047490392dee/scripts/setup_k8s_tools.sh) as userdata. Make sure to check for the latest versions.
+Ensure all these prerequisites are installed on your machine. When creating the instance (t3.medium recommended to build), you can use the script from [this link](https://github.com/ard-hmd/spring-petclinic-custom/blob/3f6c0fd26308561df623c605dc87047490392dee/scripts/setup_k8s_tools.sh) as User Data. Make sure to check for the latest versions.
 
 ## Initial Setup
 
