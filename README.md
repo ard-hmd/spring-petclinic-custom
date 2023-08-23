@@ -199,7 +199,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    
 3. To create the EKS cluster, use the following command:
    ```bash
-   eksctl create cluster -f eks-cluster-config.yaml
+   eksctl create cluster -f cluster-config.yaml
    ```
    sample output:
    ```
