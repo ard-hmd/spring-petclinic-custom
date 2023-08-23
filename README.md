@@ -108,8 +108,99 @@ Ensure all these prerequisites are installed on your machine. When creating the 
 
 ## Cluster Configuration
 
-1. Fetch the cluster configuration file from [this repository](https://github.com/ard-hmd/eksctl-cluster-config#usage) and follow the installation instructions provided there.
+1. Set your variables:
+   ```bash
+   CLUSTER_NAME="your_cluster_name"
+   REGION="your_region"
+   NODE_GROUP_NAME="your_node_group_name"
+   INSTANCE_TYPE="your_instance_type"
+   KEY_NAME="your_key_name"
+   ACCOUNT_ID="$(aws sts get-caller-identity --query Account --output text)"
+   ZONES=("az-1a" "az-2b") # Adjust the zones as necessary
+   ```
+   > **Note:**  Replace the variable values with your actual values before executing the commands.
 
+2. Generate the configuration File:
+   ```bash
+   cat << EOF > cluster-config.yaml
+   apiVersion: eksctl.io/v1alpha5
+   kind: ClusterConfig
+   
+   # Metadata for the cluster
+   metadata:
+     name: $CLUSTER_NAME
+     region: $REGION
+   
+   # Availability zones for the cluster
+   availabilityZones:
+   EOF
+   
+   # Ajout des zones de disponibilité au fichier
+   for ZONE in "${ZONES[@]}"; do
+     echo "  - $ZONE" >> cluster-config.yaml
+   done
+   
+   cat << EOF >> cluster-config.yaml
+   
+   # Configuration for the managed node group
+   managedNodeGroups:
+     - name: $NODE_GROUP_NAME
+       # Instance type for nodes
+       instanceType: $INSTANCE_TYPE
+       # Minimum and maximum number of nodes
+       minSize: 2
+       maxSize: 4
+       # Volume size for each node
+       volumeSize: 20
+       ssh:
+         # Allow SSH access
+         allow: true
+         # Use the key which is already on AWS
+         publicKeyName: $KEY_NAME
+       # Use private networking for nodes
+       privateNetworking: true
+       iam:
+         # IAM policies associated with the node group
+         withAddonPolicies:
+           autoScaler: true
+           externalDNS: true
+           imageBuilder: true
+           appMesh: true
+           albIngress: true
+   
+   # IAM configuration for the cluster
+   iam:
+     # Associate the OIDC provider with the cluster
+     withOIDC: true
+     # IAM service account configuration for EBS CSI driver
+     serviceAccounts:
+       - metadata:
+           name: ebs-csi-controller-sa
+           namespace: kube-system
+         # IAM policy to attach to the service account
+         attachPolicyARNs:
+           - arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
+         # Use IAM role only without creating a service account
+         roleOnly: true
+         # Name of the IAM role to use
+         roleName: AmazonEKS_EBS_CSI_DriverRole
+   
+   # Addons configuration for the cluster
+   addons:
+     - name: aws-ebs-csi-driver
+       version: latest
+       # IAM role to associate with the addon
+       serviceAccountRoleARN: arn:aws:iam::$ACCOUNT_ID:role/AmazonEKS_EBS_CSI_DriverRole
+       # IAM policy to attach to the addon
+       attachPolicyARNs:
+         - arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy
+   EOF
+   ```
+   
+3. To create the EKS cluster, use the following command:
+   ```bash
+   eksctl create cluster -f eks-cluster-config.yaml
+   ```
    sample output:
    ```
    [...]
@@ -119,7 +210,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    2023-08-22 13:18:55 [✔]  EKS cluster "eks-test" in "eu-west-3" region is ready
    ```
 
-3. Once the cluster and node group are set up, verify the installation:
+4. Once the cluster and node group are set up, verify the installation:
    ```bash
    kubectl get nodes
    ```
@@ -129,8 +220,7 @@ Ensure all these prerequisites are installed on your machine. When creating the 
    ip-192-168-119-222.eu-west-3.compute.internal   Ready    <none>   12m   v1.25.11-eks-a5565ad
    ip-192-168-76-36.eu-west-3.compute.internal     Ready    <none>   12m   v1.25.11-eks-a5565ad
    ```
-
-4. Login to DockerHub
+5. Login to DockerHub
    ```bash
    docker login
    ```
