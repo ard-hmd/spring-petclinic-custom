@@ -15,18 +15,24 @@ This project is a private fork of the [spring-petclinic-cloud](https://github.co
 
 Before you begin, ensure you have the following prerequisites installed on your machine:
 
-| Tool       | Description                                   | Installation Guide                                                                                             |
-|------------|-----------------------------------------------|----------------------------------------------------------------------------------------------------------------|
-| IAM User   | An IAM user with programmatic access.         | -                                                                                                              |
-| kubectl    | Command-line tool for Kubernetes.             | [Guide](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html)                                 |
-| eksctl     | CLI for Amazon EKS management.                | [Guide](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)                                          |
-| helm       | Package manager for Kubernetes.               | [Guide](https://helm.sh/docs/intro/install/)                                                                   |
-| docker     | Platform for containerization.                | [Guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-docker.html)    |
-| maven      | Build automation tool for Java.               | [Guide](https://docs.aws.amazon.com/neptune/latest/userguide/iam-auth-connect-prerq.html)                      |
-| java       | Popular programming language.                 | [Guide](https://linux.how2shout.com/how-to-install-java-on-amazon-linux-2023/)                                 |
-| git        | Distributed version control system.           | [Guide](https://git-scm.com/download/linux)                                                                    |
+| Tool         | Description                                   | Installation Guide                                                                                             |
+|--------------|-----------------------------------------------|----------------------------------------------------------------------------------------------------------------|
+| IAM User     | An IAM user with programmatic access.         | -                                                                                                              |
+| AWS Key pair | Have an existing Amazon EC2 Key Pair.         | [Guide](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html)                                 |
+| kubectl      | Command-line tool for Kubernetes.             | [Guide](https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html)                                 |
+| eksctl       | CLI for Amazon EKS management.                | [Guide](https://docs.aws.amazon.com/eks/latest/userguide/eksctl.html)                                          |
+| helm         | Package manager for Kubernetes.               | [Guide](https://helm.sh/docs/intro/install/)                                                                   |
+| docker       | Platform for containerization.                | [Guide](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-docker.html)    |
+| maven        | Build automation tool for Java.               | [Guide](https://docs.aws.amazon.com/neptune/latest/userguide/iam-auth-connect-prerq.html)                      |
+| java         | Popular programming language.                 | [Guide](https://linux.how2shout.com/how-to-install-java-on-amazon-linux-2023/)                                 |
+| git          | Distributed version control system.           | [Guide](https://git-scm.com/download/linux)                                                                    |
 
-Ensure all these prerequisites are installed on your machine. When creating the instance (t3.medium recommended to build), you can use the script setup_k8s_tools.sh from [this link](https://github.com/ard-hmd/spring-petclinic-custom/blob/3f6c0fd26308561df623c605dc87047490392dee/scripts) as User Data. Make sure to check for the latest versions.
+Ensure all these prerequisites are installed on your machine. Make sure to check for the latest versions.
+
+
+For our requirements, we've used an Amazon Linux 2023 AMI with a t3.medium instance type, which is the minimum required for building purposes.
+
+You can fill the User Data with the following script [`setup_k8s_tools.sh`](https://github.com/ard-hmd/spring-petclinic-custom/blob/3f6c0fd26308561df623c605dc87047490392dee/scripts) .
 
 ## Initial Setup
 
