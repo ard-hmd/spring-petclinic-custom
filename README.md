@@ -241,10 +241,10 @@ Ensure all these prerequisites are installed on your machine. When creating the 
 
 1. Clone the repository:
    ```bash
-   cd ~
-   git clone git@github.com:username/spring-petclinic-custom.git
+   git clone git@github.com:<USER_NAME>/spring-petclinic-custom.git
    cd spring-petclinic-custom
    ```
+   > **Note:**  Replace placeholders like <USER_NAME> with your actual values before executing commands.
    
 2. Build the Docker images:
    ```bash
