@@ -9,7 +9,7 @@ spec:
       app: mysql
       app.kubernetes.io/name: mysql
   serviceName: {{ .Release.Name }}-mysql-service
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.mysql.replicaCount }}
   template:
     metadata:
       labels:
@@ -19,7 +19,7 @@ spec:
       # Initialisation des conteneurs avant le démarrage du conteneur principal
       initContainers:
       - name: init-mysql
-        image: mysql:5.7
+        image: {{ .Values.mysql.image }}
         command:
         - bash
         - "-c"
@@ -45,7 +45,7 @@ spec:
 
       # Clonage des données MySQL depuis le pod précédent (s'il existe)
       - name: clone-mysql
-        image: gcr.io/google-samples/xtrabackup:1.0
+        image: {{ .Values.xtrabackup.image }}
         command:
         - bash
         - "-c"
@@ -73,10 +73,10 @@ spec:
       - name: mysql
         image: mysql:5.7
         env:
-        - name: MYSQL_DATABASE
-          value: service_instance_db
-        - name: MYSQL_ALLOW_EMPTY_PASSWORD
-          value: "1"
+          {{- range $envVar := .Values.mysql.envVars }}
+          - name: {{ $envVar.name }}
+            value: {{ $envVar.value | quote }}
+          {{- end }}
         ports:
         - name: mysql
           containerPort: 3306
@@ -108,7 +108,7 @@ spec:
 
       # Conteneur xtrabackup pour la sauvegarde et la réplication
       - name: xtrabackup
-        image: gcr.io/google-samples/xtrabackup:1.0
+        image: {{ .Values.xtrabackup.image }}
         ports:
         - name: xtrabackup
           containerPort: 3307
@@ -181,4 +181,4 @@ spec:
       accessModes: ["ReadWriteOnce"]
       resources:
         requests:
-          storage: 1Gi
+          storage: {{ .Values.mysql.storageSize }}
