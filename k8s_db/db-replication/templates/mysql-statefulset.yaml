@@ -1,0 +1,184 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-mysql-statefulset
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+      app.kubernetes.io/name: mysql
+  serviceName: {{ .Release.Name }}-mysql-service
+  replicas: {{ .Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: mysql
+        app.kubernetes.io/name: mysql
+    spec:
+      # Initialisation des conteneurs avant le démarrage du conteneur principal
+      initContainers:
+      - name: init-mysql
+        image: mysql:5.7
+        command:
+        - bash
+        - "-c"
+        - |
+          set -ex
+          # Génère l'ID du serveur MySQL à partir de l'indice ordinal du pod.
+          [[ $HOSTNAME =~ -([0-9]+)$ ]] || exit 1
+          ordinal=${BASH_REMATCH[1]}
+          echo [mysqld] > /mnt/conf.d/server-id.cnf
+          # Ajoute un décalage pour éviter la valeur réservée server-id=0.
+          echo server-id=$((100 + $ordinal)) >> /mnt/conf.d/server-id.cnf
+          # Copie les fichiers conf.d appropriés depuis la config map vers emptyDir.
+          if [[ $ordinal -eq 0 ]]; then
+            cp /mnt/config-map/primary.cnf /mnt/conf.d/
+          else
+            cp /mnt/config-map/replica.cnf /mnt/conf.d/
+          fi
+        volumeMounts:
+        - name: conf
+          mountPath: /mnt/conf.d
+        - name: config-map
+          mountPath: /mnt/config-map
+
+      # Clonage des données MySQL depuis le pod précédent (s'il existe)
+      - name: clone-mysql
+        image: gcr.io/google-samples/xtrabackup:1.0
+        command:
+        - bash
+        - "-c"
+        - |
+          set -ex
+          # Passe le clonage si les données existent déjà.
+          [[ -d /var/lib/mysql/mysql ]] && exit 0
+          # Passe le clonage sur le pod primaire (indice ordinal 0).
+          [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
+          ordinal=${BASH_REMATCH[1]}
+          [[ $ordinal -eq 0 ]] && exit 0
+          # Clone les données du pod précédent.
+          ncat --recv-only {{ .Release.Name }}-mysql-statefulset-$(($ordinal-1)).{{ .Release.Name }}-mysql-service 3307 | xbstream -x -C /var/lib/mysql
+          # Prépare la sauvegarde.
+          xtrabackup --prepare --target-dir=/var/lib/mysql
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        - name: conf
+          mountPath: /etc/mysql/conf.d
+
+      # Conteneur principal MySQL
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        env:
+        - name: MYSQL_DATABASE
+          value: service_instance_db
+        - name: MYSQL_ALLOW_EMPTY_PASSWORD
+          value: "1"
+        ports:
+        - name: mysql
+          containerPort: 3306
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        - name: conf
+          mountPath: /etc/mysql/conf.d
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+        # Sonde de disponibilité pour vérifier l'état du conteneur MySQL
+        livenessProbe:
+          exec:
+            command: ["mysqladmin", "ping"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        # Sonde de préparation pour vérifier la disponibilité du conteneur MySQL
+        readinessProbe:
+          exec:
+            # Vérifie si les requêtes peuvent être exécutées via TCP (skip-networking est désactivé).
+            command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
+
+      # Conteneur xtrabackup pour la sauvegarde et la réplication
+      - name: xtrabackup
+        image: gcr.io/google-samples/xtrabackup:1.0
+        ports:
+        - name: xtrabackup
+          containerPort: 3307
+        command:
+        - bash
+        - "-c"
+        - |
+          set -ex
+          cd /var/lib/mysql
+
+          # Détermine la position du binlog des données clonées, le cas échéant.
+          if [[ -f xtrabackup_slave_info && "x$(<xtrabackup_slave_info)" != "x" ]]; then
+            # XtraBackup a déjà généré une requête partielle "CHANGE MASTER TO"
+            # parce que nous clonons à partir d'une réplique existante. (Doit supprimer le point-virgule final !)
+            cat xtrabackup_slave_info | sed -E 's/;$//g' > change_master_to.sql.in
+            # Ignorer xtrabackup_binlog_info dans ce cas (inutile).
+            rm -f xtrabackup_slave_info xtrabackup_binlog_info
+          elif [[ -f xtrabackup_binlog_info ]]; then
+            # Nous clonons directement à partir du primaire. Analyser la position du binlog.
+            [[ `cat xtrabackup_binlog_info` =~ ^(.*?)[[:space:]]+(.*?)$ ]] || exit 1
+            rm -f xtrabackup_binlog_info xtrabackup_slave_info
+            echo "CHANGE MASTER TO MASTER_LOG_FILE='${BASH_REMATCH[1]}',\
+                  MASTER_LOG_POS=${BASH_REMATCH[2]}" > change_master_to.sql.in
+          fi
+
+          # Vérifie si nous devons terminer un clonage en démarrant la réplication.
+          if [[ -f change_master_to.sql.in ]]; then
+            echo "En attente de la disponibilité de mysqld (accepte les connexions)"
+            until mysql -h 127.0.0.1 -e "SELECT 1"; do sleep 1; done
+
+            echo "Initialisation de la réplication depuis la position de clonage"
+            mysql -h 127.0.0.1 \
+                  -e "$(<change_master_to.sql.in), \
+                          MASTER_HOST='{{ .Release.Name }}-mysql-statefulset-0.{{ .Release.Name }}-mysql-service', \
+                          MASTER_USER='root', \
+                          MASTER_PASSWORD='', \
+                          MASTER_CONNECT_RETRY=10; \
+                        START SLAVE;" || exit 1
+            mv change_master_to.sql.in change_master_to.sql.orig
+          fi
+
+          # Démarre un serveur pour envoyer des sauvegardes lorsque demandé par les pairs.
+          exec ncat --listen --keep-open --send-only --max-conns=1 3307 -c \
+            "xtrabackup --backup --slave-info --stream=xbstream --host=127.0.0.1 --user=root"
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        - name: conf
+          mountPath: /etc/mysql/conf.d
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+
+      # Définition des volumes utilisés par les conteneurs
+      volumes:
+      - name: conf
+        emptyDir: {}
+      - name: config-map
+        configMap:
+          name: {{ .Release.Name }}-mysql-configmap
+
+  # Définition des modèles de revendication de volume pour les pods
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      namespace: {{ .Release.Namespace }}
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
