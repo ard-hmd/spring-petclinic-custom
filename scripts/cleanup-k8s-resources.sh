@@ -16,13 +16,13 @@ else
     sleep 5
 
     echo "Uninstalling MySQL for vets-db..."
-    helm uninstall vets-db-mysql -n spring-petclinic
+    helm uninstall vets-db -n spring-petclinic
 
     echo "Uninstalling MySQL for visits-db..."
-    helm uninstall visits-db-mysql -n spring-petclinic
+    helm uninstall visits-db -n spring-petclinic
 
     echo "Uninstalling MySQL for customers-db..."
-    helm uninstall customers-db-mysql -n spring-petclinic
+    helm uninstall customers-db -n spring-petclinic
 
     echo "Waiting for 5 seconds to ensure all MySQL instances are removed..."
     sleep 5
