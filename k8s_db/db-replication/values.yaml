@@ -1,1 +1,11 @@
-replicaCount: 2
+mysql:
+  image: mysql:5.7
+  replicaCount: 2
+  storageSize: 1Gi
+  envVars:
+    - name: MYSQL_DATABASE
+      value: service_instance_db
+    - name: MYSQL_ALLOW_EMPTY_PASSWORD
+      value: "1"
+xtrabackup:
+  image: gcr.io/google-samples/xtrabackup:1.0
