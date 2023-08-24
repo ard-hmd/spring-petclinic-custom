@@ -16,7 +16,7 @@ spec:
         app: mysql
         app.kubernetes.io/name: mysql
     spec:
-      # Initialisation des conteneurs avant le démarrage du conteneur principal
+      # Initialize containers before the main container starts
       initContainers:
       - name: init-mysql
         image: {{ .Values.mysql.image }}
@@ -25,13 +25,13 @@ spec:
         - "-c"
         - |
           set -ex
-          # Génère l'ID du serveur MySQL à partir de l'indice ordinal du pod.
+          # Generate MySQL server ID from the pod's ordinal index.
           [[ $HOSTNAME =~ -([0-9]+)$ ]] || exit 1
           ordinal=${BASH_REMATCH[1]}
           echo [mysqld] > /mnt/conf.d/server-id.cnf
-          # Ajoute un décalage pour éviter la valeur réservée server-id=0.
+          # Add an offset to avoid reserved value server-id=0.
           echo server-id=$((100 + $ordinal)) >> /mnt/conf.d/server-id.cnf
-          # Copie les fichiers conf.d appropriés depuis la config map vers emptyDir.
+          # Copy appropriate conf.d files from config map to emptyDir.
           if [[ $ordinal -eq 0 ]]; then
             cp /mnt/config-map/primary.cnf /mnt/conf.d/
           else
@@ -43,7 +43,7 @@ spec:
         - name: config-map
           mountPath: /mnt/config-map
 
-      # Clonage des données MySQL depuis le pod précédent (s'il existe)
+      # Clone MySQL data from the previous pod (if it exists)
       - name: clone-mysql
         image: {{ .Values.xtrabackup.image }}
         command:
@@ -51,15 +51,15 @@ spec:
         - "-c"
         - |
           set -ex
-          # Passe le clonage si les données existent déjà.
+          # Skip cloning if data already exists.
           [[ -d /var/lib/mysql/mysql ]] && exit 0
-          # Passe le clonage sur le pod primaire (indice ordinal 0).
+          # Skip cloning on primary pod (ordinal index 0).
           [[ `hostname` =~ -([0-9]+)$ ]] || exit 1
           ordinal=${BASH_REMATCH[1]}
           [[ $ordinal -eq 0 ]] && exit 0
-          # Clone les données du pod précédent.
+          # Clone data from the previous pod.
           ncat --recv-only {{ .Release.Name }}-mysql-statefulset-$(($ordinal-1)).{{ .Release.Name }}-mysql-service 3307 | xbstream -x -C /var/lib/mysql
-          # Prépare la sauvegarde.
+          # Prepare the backup.
           xtrabackup --prepare --target-dir=/var/lib/mysql
         volumeMounts:
         - name: data
@@ -68,7 +68,7 @@ spec:
         - name: conf
           mountPath: /etc/mysql/conf.d
 
-      # Conteneur principal MySQL
+      # Main MySQL container
       containers:
       - name: mysql
         image: mysql:5.7
@@ -90,23 +90,23 @@ spec:
           requests:
             cpu: 500m
             memory: 1Gi
-        # Sonde de disponibilité pour vérifier l'état du conteneur MySQL
+        # Availability probe to check MySQL container's state
         livenessProbe:
           exec:
             command: ["mysqladmin", "ping"]
           initialDelaySeconds: 30
           periodSeconds: 10
           timeoutSeconds: 5
-        # Sonde de préparation pour vérifier la disponibilité du conteneur MySQL
+        # Readiness probe to check MySQL container's availability
         readinessProbe:
           exec:
-            # Vérifie si les requêtes peuvent être exécutées via TCP (skip-networking est désactivé).
+            # Check if queries can be executed via TCP (skip-networking is disabled).
             command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
           initialDelaySeconds: 5
           periodSeconds: 2
           timeoutSeconds: 1
 
-      # Conteneur xtrabackup pour la sauvegarde et la réplication
+      # xtrabackup container for backup and replication
       - name: xtrabackup
         image: {{ .Values.xtrabackup.image }}
         ports:
@@ -119,27 +119,27 @@ spec:
           set -ex
           cd /var/lib/mysql
 
-          # Détermine la position du binlog des données clonées, le cas échéant.
+          # Determine the binlog position of cloned data, if any.
           if [[ -f xtrabackup_slave_info && "x$(<xtrabackup_slave_info)" != "x" ]]; then
-            # XtraBackup a déjà généré une requête partielle "CHANGE MASTER TO"
-            # parce que nous clonons à partir d'une réplique existante. (Doit supprimer le point-virgule final !)
+            # XtraBackup has already generated a partial "CHANGE MASTER TO" query
+            # because we are cloning from an existing replica. (Must remove the trailing semicolon!)
             cat xtrabackup_slave_info | sed -E 's/;$//g' > change_master_to.sql.in
-            # Ignorer xtrabackup_binlog_info dans ce cas (inutile).
+            # Ignore xtrabackup_binlog_info in this case (not needed).
             rm -f xtrabackup_slave_info xtrabackup_binlog_info
           elif [[ -f xtrabackup_binlog_info ]]; then
-            # Nous clonons directement à partir du primaire. Analyser la position du binlog.
+            # We are cloning directly from the primary. Parse the binlog position.
             [[ `cat xtrabackup_binlog_info` =~ ^(.*?)[[:space:]]+(.*?)$ ]] || exit 1
             rm -f xtrabackup_binlog_info xtrabackup_slave_info
             echo "CHANGE MASTER TO MASTER_LOG_FILE='${BASH_REMATCH[1]}',\
                   MASTER_LOG_POS=${BASH_REMATCH[2]}" > change_master_to.sql.in
           fi
 
-          # Vérifie si nous devons terminer un clonage en démarrant la réplication.
+          # Check if we need to finish cloning by starting replication.
           if [[ -f change_master_to.sql.in ]]; then
-            echo "En attente de la disponibilité de mysqld (accepte les connexions)"
+            echo "Waiting for mysqld availability (accepting connections)"
             until mysql -h 127.0.0.1 -e "SELECT 1"; do sleep 1; done
 
-            echo "Initialisation de la réplication depuis la position de clonage"
+            echo "Initializing replication from clone position"
             mysql -h 127.0.0.1 \
                   -e "$(<change_master_to.sql.in), \
                           MASTER_HOST='{{ .Release.Name }}-mysql-statefulset-0.{{ .Release.Name }}-mysql-service', \
@@ -150,7 +150,7 @@ spec:
             mv change_master_to.sql.in change_master_to.sql.orig
           fi
 
-          # Démarre un serveur pour envoyer des sauvegardes lorsque demandé par les pairs.
+          # Start a server to send backups when requested by peers.
           exec ncat --listen --keep-open --send-only --max-conns=1 3307 -c \
             "xtrabackup --backup --slave-info --stream=xbstream --host=127.0.0.1 --user=root"
         volumeMounts:
@@ -164,7 +164,7 @@ spec:
             cpu: 100m
             memory: 100Mi
 
-      # Définition des volumes utilisés par les conteneurs
+      # Definition of volumes used by the containers
       volumes:
       - name: conf
         emptyDir: {}
@@ -172,7 +172,7 @@ spec:
         configMap:
           name: {{ .Release.Name }}-mysql-configmap
 
-  # Définition des modèles de revendication de volume pour les pods
+  # Definition of volume claim templates for pods
   volumeClaimTemplates:
   - metadata:
       name: data

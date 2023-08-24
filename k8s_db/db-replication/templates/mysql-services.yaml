@@ -16,7 +16,7 @@ spec:
     app: mysql
 
 # Client service for connecting to any MySQL instance for reads.
-# For writes, you must instead connect to the primary: {{ .Release.Name }}-mysql-0.{{ .Release.Name }}-mysql-service.
+# For writes, you must instead connect to the primary: {{ .Release.Name }}-mysql-statefulset-0.{{ .Release.Name }}-mysql-service.
 ---
 apiVersion: v1
 kind: Service
