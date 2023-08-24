@@ -6,9 +6,9 @@ This Helm chart deploys a MySQL Replicated StatefulSet in a Kubernetes cluster, 
 
 To install the MySQL StatefulSet chart, use the following Helm command:
 
-	```bash
-	helm install my-mysql ./path-to-chart-directory
-	```
+```bash
+helm install my-mysql ./path-to-chart-directory
+```
  
   > **Note:**  Replace `my-mysql` with the desired release name and `./path-to-chart-directory` with the path to the directory containing the chart.
 
@@ -28,15 +28,15 @@ For more details, refer to the [values.yaml](./values.yaml) file.
 
 1. To install the MySQL StatefulSet with default values:
 
-	```bash
-	helm install my-mysql ./path-to-chart-directory
-	```
+```bash
+helm install my-mysql ./path-to-chart-directory
+```
 
-2. To customize the MySQL image version:
+2. To customize the MySQL replica count:
 
-	```bash
-	helm install my-mysql ./path-to-chart-directory --set mysql.replicaCount=3
-	```
+```bash
+helm install my-mysql ./path-to-chart-directory --set mysql.replicaCount=3
+```
 
 ## Notes
 
