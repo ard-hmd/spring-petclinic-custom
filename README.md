@@ -32,7 +32,7 @@ Ensure all these prerequisites are installed on your machine. Make sure to check
 
 For our requirements, we've used an Amazon Linux 2023 AMI with a t3.medium instance type, which is the minimum required for building purposes.
 
-You can fill the User Data with the following script [`setup_k8s_tools.sh`](https://github.com/ard-hmd/spring-petclinic-custom/blob/4212fc79e7071e79709cf02185c8812274b65782/scripts/setup_k8s_tools.sh).
+You can fill the User Data with the following script [`setup_k8s_tools.sh`](./scripts/setup_k8s_tools.sh).
 
 ## Initial Setup
 
