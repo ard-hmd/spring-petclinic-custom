@@ -1,0 +1,132 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Release.Name }}-mysql-statefulset
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+      app.kubernetes.io/name: mysql
+  serviceName: {{ .Release.Name }}-mysql-service
+  replicas: {{ .Values.mysql.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: mysql
+        app.kubernetes.io/name: mysql
+    spec:
+      # Initialize containers before the main container starts
+      initContainers:
+      - name: init-mysql
+        image: {{ .Values.mysql.image }}
+        command: ["/script/init-mysql.sh"]
+        volumeMounts:
+        - name: conf
+          mountPath: /mnt/conf.d
+        - name: config-map
+          mountPath: /mnt/config-map
+        - name: init-mysql-script
+          mountPath: "/script"
+
+      # Clone MySQL data from the previous pod (if it exists)
+      - name: clone-mysql
+        image: {{ .Values.xtrabackup.image }}
+        command: ["/script/clone-mysql.sh"]
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        - name: conf
+          mountPath: /etc/mysql/conf.d
+        - name: clone-mysql-script
+          mountPath: "/script"
+
+      # Main MySQL container
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        env:
+          {{- range $envVar := .Values.mysql.envVars }}
+          - name: {{ $envVar.name }}
+            value: {{ $envVar.value | quote }}
+          {{- end }}
+        ports:
+        - name: mysql
+          containerPort: 3306
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        - name: conf
+          mountPath: /etc/mysql/conf.d
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+        # Availability probe to check MySQL container's state
+        livenessProbe:
+          exec:
+            command: ["mysqladmin", "ping"]
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        # Readiness probe to check MySQL container's availability
+        readinessProbe:
+          exec:
+            # Check if queries can be executed via TCP (skip-networking is disabled).
+            command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
+
+      # xtrabackup container for backup and replication
+      - name: xtrabackup
+        image: {{ .Values.xtrabackup.image }}
+        ports:
+        - name: xtrabackup
+          containerPort: 3307
+        command: ["/script/xtrabackup-mysql.sh"]
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        - name: conf
+          mountPath: /etc/mysql/conf.d
+        - name: xtrabackup-mysql-script
+          mountPath: "/script"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+
+      # Definition of volumes used by the containers
+      volumes:
+      - name: conf
+        emptyDir: {}
+      - name: config-map
+        configMap:
+          name: {{ .Release.Name }}-mysql-configmap
+      - name: init-mysql-script
+        configMap:
+          name: {{ .Release.Name }}-init-mysql-configmap
+          defaultMode: 0500
+      - name: clone-mysql-script
+        configMap:
+          name: {{ .Release.Name }}-clone-mysql-configmap
+          defaultMode: 0500
+      - name: xtrabackup-mysql-script
+        configMap:
+          name: {{ .Release.Name }}-xtrabackup-mysql-configmap
+          defaultMode: 0500
+
+  # Definition of volume claim templates for pods
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      namespace: {{ .Release.Namespace }}
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: {{ .Values.mysql.storageSize }}
