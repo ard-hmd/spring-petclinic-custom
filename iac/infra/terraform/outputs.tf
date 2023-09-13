@@ -3,6 +3,11 @@ output "vpc_id" {
   value       = module.aws_vpc.vpc_id
 }
 
+output "vpc_cidr" {
+  description = "The CIDR of the VPC."
+  value       = module.aws_vpc.vpc_cidr
+}
+
 output "public_subnets_ids" {
   description = "The IDs of the public subnets."
   value       = module.aws_vpc.public_subnets_ids
@@ -41,4 +46,19 @@ output "nat_gateways_ids" {
 output "elastic_ips" {
   description = "The Elastic IPs associated with the NAT gateways."
   value       = module.aws_vpc.elastic_ips
+}
+
+output "db_instance_arns" {
+  description = "The ARNs of the RDS instances"
+  value       = module.rds_instances.db_instance_arn
+}
+
+output "db_instance_endpoints" {
+  description = "The connection endpoints of the RDS instances"
+  value       = module.rds_instances.db_instance_endpoint
+}
+
+output "db_instance_identifiers" {
+  description = "The identifiers of the RDS instances"
+  value       = module.rds_instances.db_instance_identifier
 }
