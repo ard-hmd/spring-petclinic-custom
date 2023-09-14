@@ -23,11 +23,26 @@ module "rds_instances" {
       backup_retention_period = 1
       vpc_id                  = module.aws_vpc.vpc_id
       allowed_cidrs           = module.aws_vpc.vpc_cidr
+      multi_az                = true
     },
   ]
 }
 
-module "rds_replica" {
-  source = "github.com/ard-hmd/terraform-aws-rds-replica.git"
-  replicate_source_db = "my-db-1"
+# module "rds_replica" {
+#   source = "github.com/ard-hmd/terraform-aws-rds-replica.git"
+#   replicate_source_db = "my-db-1"
+# }
+
+module "rds_replicas" {
+  source       = "github.com/ard-hmd/terraform-aws-rds-replica.git"
+  replica_configurations = [
+    {
+      instance_class          = "db.t3.micro"
+      skip_final_snapshot     = true
+      backup_retention_period = 0
+      replicate_source_db     = "my-db-1"
+      multi_az                = true
+      apply_immediately       = true
+    },
+  ]
 }
