@@ -2,7 +2,7 @@ resource "aws_codebuild_project" "pipeline" {
     name = "petclinic-customers-pipeline"
     source {
         type = "CODECOMMIT"
-        location = "petclinic-customers"
+        location = "https://git-codecommit.eu-west-3.amazonaws.com/v1/repos/petclinic-customers"
     }
 
     source_version = "master"
