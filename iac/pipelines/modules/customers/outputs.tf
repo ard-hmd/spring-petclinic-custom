@@ -1,0 +1,1 @@
+output "project_identifier" { value = aws_codebuild_project.pipeline.public_project_alias }

@@ -18,5 +18,5 @@ resource "aws_codebuild_project" "pipeline" {
         type = "NO_ARTIFACTS"
     }
     
-    service_role = "arn:aws:iam::296615500438:role/service-role/codebuild-p-service-role"
+    service_role = var.build_role_arn
 }
