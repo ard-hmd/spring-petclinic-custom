@@ -1,0 +1,66 @@
+version: 0.2
+
+env:
+  variables:
+    REPOSITORY_PREFIX: michelnguyenfr
+    REPOSITORY_URI: michelnguyenfr/spring-petclinic-cloud-customers-service
+    TAG: latest
+
+  parameter-store:
+    CLUSTER_NAME: PETCLINIC_EKS_CLUSTER_NAME
+    DOCKER_LOGIN: PETCLINIC_DOCKER_USERNAME
+    DOCKER_PASSWORD: PETCLINIC_DOCKER_PASSWORD
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+    commands:
+      - echo Entered the install phase...
+      - echo CLUSTER_NAME = $CLUSTER_NAME
+      - yum install -y openssl # dependency for the helm package
+      - export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto # workaround: hardcoded ENV variable for maven
+      - ./scripts/setup_k8s_tools.sh
+      
+      - aws eks update-kubeconfig --name $CLUSTER_NAME # connecting to the petclinic EKS cluster
+    finally:
+      - echo "Checking versions of packages newly installed:"
+      # - kubectl version --output=json
+      - eksctl version
+      - helm version
+      - docker --version
+      - mvn --version
+      - java -version
+      - git version
+  pre_build:
+    commands:
+      - echo Install completed on `date`
+      - echo Entered the pre_build phase...
+      - echo Log into Docker Hub...
+      - docker login -u $DOCKER_LOGIN -p $DOCKER_PASSWORD
+      - echo "Connecting to EKS cluster:" $CLUSTER_NAME
+      - aws eks update-kubeconfig --name $CLUSTER_NAME # connecting to the petclinic EKS cluster
+    finally:
+      - echo This always runs even if the login command fails 
+  build:
+    commands:
+      - echo Entered the build phase...
+      - echo Build started on `date`
+      - mvn spring-boot:build-image -Pk8s -DREPOSITORY_PREFIX=${REPOSITORY_PREFIX}
+    finally:
+      - echo This always runs even if the install command fails
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Entered the post_build phase...
+      - echo "Pushing the Docker image to DockerHub..."
+      
+      - echo $REPOSITORY_URI:$TAG
+      - docker push $REPOSITORY_URI:$TAG
+      - echo "Push the Docker image to DockerHub COMPLETED on `date`"
+      
+      - echo "Deploying to EKS..."
+      - ./scripts/setup-k8s-resources.sh $REPOSITORY_PREFIX
+      - echo "Deployment to EKS COMPLETED on `date`"
+      
+      
