@@ -20,5 +20,6 @@ module "role_build" {
 
 module "pipeline_customers" {
   source = "./modules/customers"
+  build_role_arn = module.role_build.build_role_arn
 }
 
