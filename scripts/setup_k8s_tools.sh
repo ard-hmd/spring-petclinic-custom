@@ -3,7 +3,7 @@
 # Install Kubectl (tool for managing Kubernetes clusters)
 curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.27.1/2023-04-19/bin/linux/amd64/kubectl
 chmod +x ./kubectl
-mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$HOME/bin:$PATH
+mkdir -p $HOME/bin && cp ./kubectl /usr/local/bin/kubectl && export PATH=$HOME/bin:$PATH
 echo 'export PATH=$HOME/bin:$PATH' >> ~/.bashrc
 
 # Install Eksctl (tool for managing Amazon EKS clusters)
@@ -12,6 +12,9 @@ PLATFORM=$(uname -s)_$ARCH
 curl -sLO "https://github.com/eksctl-io/eksctl/releases/latest/download/eksctl_$PLATFORM.tar.gz"
 tar -xzf eksctl_$PLATFORM.tar.gz -C /tmp && rm eksctl_$PLATFORM.tar.gz
 mv /tmp/eksctl /usr/local/bin
+
+# Install openssl (dependency for Helm)
+yum install -y openssl
 
 # Install Helm (package manager for Kubernetes)
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
