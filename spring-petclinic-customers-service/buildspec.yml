@@ -10,6 +10,9 @@ env:
     CLUSTER_NAME: PETCLINIC_EKS_CLUSTER_NAME
     DOCKER_LOGIN: PETCLINIC_DOCKER_USERNAME
     DOCKER_PASSWORD: PETCLINIC_DOCKER_PASSWORD
+    ACCESS_KEY_ID: ACCESS_KEY_ID
+    SECRET_ACCESS_KEY: SECRET_ACCESS_KEY
+    REGION: PETCLINIC_REGION
 
 phases:
   install:
@@ -17,11 +20,15 @@ phases:
       java: corretto11
     commands:
       - echo Entered the install phase...
-      - echo CLUSTER_NAME = $CLUSTER_NAME
+      - export AWS_ACCESS_KEY_ID=$ACCESS_KEY_ID
+      - export AWS_SECRET_ACCESS_KEY=$SECRET_ACCESS_KEY
+      - export AWS_DEFAULT_REGION=$REGION
+      - export AWS_DEFAULT_OUTPUT="json"
+
       - yum install -y openssl # dependency for the helm package
       - export JAVA_HOME=/usr/lib/jvm/java-11-amazon-corretto # workaround: hardcoded ENV variable for maven
       - ./scripts/setup_k8s_tools.sh
-      
+
       - aws eks update-kubeconfig --name $CLUSTER_NAME # connecting to the petclinic EKS cluster
     finally:
       - echo "Checking versions of packages newly installed:"
