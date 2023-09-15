@@ -2,7 +2,7 @@ resource "aws_codebuild_project" "pipeline" {
     name = "petclinic-customers-pipeline"
     source {
         type = "CODECOMMIT"
-        location = 
+        location = "petclinic-customers"
     }
 
     source_version = "master"
