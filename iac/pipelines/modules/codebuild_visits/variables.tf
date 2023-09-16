@@ -1,0 +1,1 @@
+variable "build_role_arn" { type = string }
