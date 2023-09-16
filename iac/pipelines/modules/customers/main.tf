@@ -5,7 +5,7 @@ resource "aws_codebuild_project" "pipeline" {
         location = "https://git-codecommit.eu-west-3.amazonaws.com/v1/repos/petclinic-customers"
     }
 
-    source_version = "master"
+    source_version = "refs/heads/master"
     
     environment {
         compute_type                = "BUILD_GENERAL1_SMALL"
