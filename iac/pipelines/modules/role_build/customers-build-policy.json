@@ -4,8 +4,8 @@
         {
             "Effect": "Allow",
             "Resource": [
-                "arn:aws:logs:eu-west-3:296615500438:log-group:/aws/codebuild/petclinic-customers",
-                "arn:aws:logs:eu-west-3:296615500438:log-group:/aws/codebuild/petclinic-customers:*"
+                "arn:aws:logs:::log-group:/aws/codebuild/petclinic-customers",
+                "arn:aws:logs:::log-group:/aws/codebuild/petclinic-customers:*"
             ],
             "Action": [
                 "logs:CreateLogGroup",
@@ -29,7 +29,7 @@
         {
             "Effect": "Allow",
             "Resource": [
-                "arn:aws:codecommit:eu-west-3:296615500438:petclinic-customers"
+                "arn:aws:codecommit:::petclinic-customers"
             ],
             "Action": [
                 "codecommit:GitPull"
@@ -45,7 +45,7 @@
                 "codebuild:BatchPutCodeCoverages"
             ],
             "Resource": [
-                "arn:aws:codebuild:eu-west-3:296615500438:report-group/petclinic-customers-*"
+                "arn:aws:codebuild:::report-group/petclinic-customers-*"
             ]
         }
     ]
