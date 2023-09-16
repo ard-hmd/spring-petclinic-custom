@@ -1,17 +1,6 @@
 resource "aws_iam_role" "build_role" {
   name                = "petclinic-customer-build-role"
-  assume_role_policy  = "
-    statement {
-      effect = "Allow"
-
-      principals {
-        type        = "Service"
-        identifiers = ["codebuild.amazonaws.com"]
-      }
-
-      actions = ["sts:AssumeRole"]
-    }
-  "
+  assume_role_policy  = data.aws_iam_policy_document.instance_assume_role_policy.json
 
   tags = {
     tag-key = "terraform-petclinic-build-role"
@@ -32,3 +21,13 @@ resource "aws_iam_role_policy_attachment" "petclinic-build-role-policy-attachmen
   policy_arn = aws_iam_policy.build_policy.arn
 }
 
+data "aws_iam_policy_document" "instance_assume_role_policy" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["codebuild.amazonaws.com"]
+    }
+  }
+}
