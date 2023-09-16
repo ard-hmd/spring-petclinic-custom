@@ -18,8 +18,22 @@ module "role_build" {
   json_path = "./modules/role_build/customers-build-policy.json"
 }
 
-module "pipeline_customers" {
+module "codebuild_customers" {
   source = "./modules/codebuild_customers"
   build_role_arn = module.role_build.build_role_arn
 }
 
+module "codebuild_visits" {
+  source = "./modules/codebuild_visits"
+  build_role_arn = module.role_build.build_role_arn
+}
+
+module "codebuild_vets" {
+  source = "./modules/codebuild_vets"
+  build_role_arn = module.role_build.build_role_arn
+}
+
+module "codebuild_api_gateway" {
+  source = "./modules/codebuild_api_gateway"
+  build_role_arn = module.role_build.build_role_arn
+}
