@@ -12,6 +12,7 @@ resource "aws_codebuild_project" "pipeline" {
         image                       = "aws/codebuild/amazonlinux2-x86_64-standard:corretto11-23.07.28"
         type                        = "LINUX_CONTAINER"
         image_pull_credentials_type = "CODEBUILD"
+        privileged_mode             = true
     }
 
     artifacts {
