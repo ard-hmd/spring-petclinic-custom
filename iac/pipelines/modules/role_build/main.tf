@@ -1,5 +1,5 @@
 resource "aws_iam_role" "build_role" {
-  name                = "petclinic-customer-build-role"
+  name                = "petclinic-build-role"
   assume_role_policy  = data.aws_iam_policy_document.instance_assume_role_policy.json
 
   tags = {
