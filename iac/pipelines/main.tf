@@ -15,7 +15,7 @@ provider "aws" {
 
 module "role_build" {
   source = "./modules/role_build"
-  json_path = "./modules/role_build/customers-build-policy.json"
+  json_path = "./modules/role_build/build-policy.json"
 }
 
 module "codebuild_customers" {
