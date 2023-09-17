@@ -47,6 +47,42 @@
             "Resource": [
                 "arn:aws:codebuild:eu-west-3:296615500438:report-group/petclinic-*"
             ]
+        },
+        {
+            "Sid": "CloudWatchLogsPolicy",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "SSM",
+            "Effect": "Allow",
+            "Action": [
+                "ssm:GetParameters"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ECRPullPolicy",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Sid": "ECRAuthPolicy",
+            "Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken"
+            ],
+            "Resource": "*"
         }
     ]
 }
