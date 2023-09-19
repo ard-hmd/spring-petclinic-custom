@@ -48,20 +48,20 @@ output "elastic_ips" {
   value       = module.aws_vpc.elastic_ips
 }
 
-# output "db_instance_arns" {
-#   description = "The ARNs of the RDS instances"
-#   value       = module.rds_instances.db_instance_arn
-# }
+output "db_instance_arns" {
+  description = "The ARNs of the RDS instances"
+  value       = module.rds_instances.db_instance_arn
+}
 
-# output "db_instance_endpoints" {
-#   description = "The connection endpoints of the RDS instances"
-#   value       = module.rds_instances.db_instance_endpoint
-# }
+output "db_instance_endpoints" {
+  description = "The connection endpoints of the RDS instances"
+  value       = module.rds_instances.db_instance_endpoint
+}
 
-# output "db_instance_identifiers" {
-#   description = "The identifiers of the RDS instances"
-#   value       = module.rds_instances.db_instance_identifier
-# }
+output "db_instance_identifiers" {
+  description = "The identifiers of the RDS instances"
+  value       = module.rds_instances.db_instance_identifier
+}
 
 
 # output "replica_db_instance_identifier" {
@@ -79,8 +79,22 @@ output "elastic_ips" {
 #   value       = module.rds_replicas.replica_db_instance_arn
 # }
 
-
 output "main_eks_cluster_name" {
   description = "The name of the EKS cluster from the main configuration"
   value       = module.eks_cluster.eks_cluster_name
+}
+
+output "rds_security_group_ids" {
+  description = "The IDs of the Security Groups associated with the RDS instances."
+  value       = module.rds_instances.rds_security_group_ids
+}
+
+output "rds_security_group_names" {
+  description = "The names of the Security Groups associated with the RDS instances."
+  value       = module.rds_instances.rds_security_group_names
+}
+
+output "rds_security_group_descriptions" {
+  description = "The descriptions of the Security Groups associated with the RDS instances."
+  value       = module.rds_instances.rds_security_group_descriptions
 }
