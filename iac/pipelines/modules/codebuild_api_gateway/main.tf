@@ -1,8 +1,8 @@
 resource "aws_codebuild_project" "build" {
     name = "petclinic-api-gateway-build"
     source {
-        type = "CODECOMMIT"
-        location = "https://git-codecommit.eu-west-3.amazonaws.com/v1/repos/petclinic-api-gateway"
+        type = "GITHUB"
+        location = "https://github.com/michelnguyenfr/spring-petclinic-api-gateway.git"
     }
 
     source_version = "refs/heads/master"
