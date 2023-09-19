@@ -13,7 +13,7 @@ resource "kubernetes_namespace" "spring_petclinic" {
 resource "kubernetes_config_map" "petclinic_config" {
   metadata {
     name      = "petclinic-config"
-    namespace = "spring-petclinic"
+    namespace = var.namespace
   }
 
   data = {
