@@ -12,6 +12,18 @@ else
     echo "Applying initial namespace configuration..."
     kubectl apply -f k8s/init-namespace
 
+    kubectl create secret generic customers-db-mysql \
+    --from-literal=mysql-root-password=password \
+    --namespace spring-petclinic
+    
+    kubectl create secret generic vets-db-mysql \
+    --from-literal=mysql-root-password=password \
+    --namespace spring-petclinic
+
+    kubectl create secret generic visits-db-mysql \
+    --from-literal=mysql-root-password=password \
+    --namespace spring-petclinic
+
     echo "Applying initial services configuration..."
     kubectl apply -f k8s/init-services
 
@@ -24,20 +36,20 @@ else
     # echo "Updating helm repo"
     # helm repo update
 
-    echo "Deploying MySQL for vets-db..."
+    # echo "Deploying MySQL for vets-db..."
     # helm install vets-db-mysql bitnami/mysql --namespace spring-petclinic --set auth.database=service_instance_db
-    helm install vets-db ./k8s_db/mysql-replication-chart/ --namespace spring-petclinic
+    # helm install vets-db ./k8s_db/mysql-replication-chart/ --namespace spring-petclinic
 
-    echo "Deploying MySQL for visits-db..."
+    # echo "Deploying MySQL for visits-db..."
     # helm install visits-db-mysql bitnami/mysql --namespace spring-petclinic --set auth.database=service_instance_db
-    helm install visits-db ./k8s_db/mysql-replication-chart/ --namespace spring-petclinic
+    # helm install visits-db ./k8s_db/mysql-replication-chart/ --namespace spring-petclinic
 
-    echo "Deploying MySQL for customers-db..."
+    # echo "Deploying MySQL for customers-db..."
     # helm install customers-db-mysql bitnami/mysql --namespace spring-petclinic --set auth.database=service_instance_db
-    helm install customers-db ./k8s_db/mysql-replication-chart/ --namespace spring-petclinic
+    # helm install customers-db ./k8s_db/mysql-replication-chart/ --namespace spring-petclinic
 
-    echo "Waiting for 90 seconds to ensure MySQL deployments are up and running..."
-    sleep 90
+    # echo "Waiting for 90 seconds to ensure MySQL deployments are up and running..."
+    # sleep 90
 
     echo "Deploying applications to Kubernetes..."
     ./scripts/deployToKubernetes.sh

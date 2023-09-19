@@ -46,14 +46,14 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           value: kubernetes
         - name: SPRING_DATASOURCE_URL
-          value: jdbc:mysql://vets-db-mysql-statefulset-0.vets-db-mysql-service.spring-petclinic.svc.cluster.local:3306/service_instance_db?queryInterceptors=brave.mysql8.TracingQueryInterceptor&exceptionInterceptors=brave.mysql8.TracingExceptionInterceptor&zipkinServiceName=vets-db
+          value: jdbc:mysql://vetsdb.c6wqjjevzbkj.eu-west-3.rds.amazonaws.com:3306/vetsdb?queryInterceptors=brave.mysql8.TracingQueryInterceptor&exceptionInterceptors=brave.mysql8.TracingExceptionInterceptor&zipkinServiceName=vets-db
         - name: SPRING_DATASOURCE_USERNAME
-          value: root
-        # - name: SPRING_DATASOURCE_PASSWORD
-        #   valueFrom:
-        #      secretKeyRef:
-        #        name: vets-db-mysql
-        #        key: mysql-root-password
+          value: admin
+        - name: SPRING_DATASOURCE_PASSWORD
+          valueFrom:
+             secretKeyRef:
+               name: vets-db-mysql
+               key: mysql-root-password
         - name: MANAGEMENT_METRICS_EXPORT_WAVEFRONT_URI
           value: proxy://wavefront-proxy.spring-petclinic.svc.cluster.local:2878
         ports:
