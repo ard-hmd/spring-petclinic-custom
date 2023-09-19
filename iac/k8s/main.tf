@@ -10,7 +10,7 @@ resource "kubernetes_namespace" "spring_petclinic" {
 }
 
 # k8s/init-services/02-config-map.yaml
-resource "kubernetes_config_map" "petclinic_config" {
+resource "kubernetes_config_map" "petclinic-config" {
   metadata {
     name      = "petclinic-config"
     namespace = var.namespace
@@ -27,11 +27,6 @@ resource "kubernetes_config_map" "petclinic_config" {
           enabled: true
           mime-types: application/json,text/css,application/javascript
           min-response-size: 2048
-
-      wavefront:
-        application:
-          name: spring-petclinic-k8s
-        freemium-account: true
 
       # Logging
       logging.level.org.springframework: INFO
@@ -60,9 +55,7 @@ resource "kubernetes_config_map" "petclinic_config" {
         metrics:
           export:
             prometheus:
-              enabled: true
-            wavefront:
-              enabled: true
+              enabled: false
 
       customers-service-id: http://customers-service.spring-petclinic.svc.cluster.local:8080
       visits-service-id: http://visits-service.spring-petclinic.svc.cluster.local:8080
@@ -159,7 +152,8 @@ resource "kubernetes_role_binding" "namespace_reader_binding" {
 
   role_ref {
     kind      = "Role"
-    name      = kubernetes_role.namespace_reader.metadata[0].name
+    name      = "namespace-reader"
+    # name      = kubernetes_role.namespace_reader.metadata[0].name
     api_group = "rbac.authorization.k8s.io"
   }
 }
@@ -344,11 +338,6 @@ resource "kubernetes_deployment" "api_gateway" {
             value = "kubernetes"
           }
 
-          env {
-            name  = "MANAGEMENT_METRICS_EXPORT_WAVEFRONT_URI"
-            value = "proxy://wavefront-proxy.spring-petclinic.svc.cluster.local:2878"
-          }
-
           port {
             container_port = 8080
           }
@@ -456,11 +445,6 @@ resource "kubernetes_deployment" "customers_service" {
                 key  = "mysql-root-password"
               }
             }
-          }
-
-          env {
-            name  = "MANAGEMENT_METRICS_EXPORT_WAVEFRONT_URI"
-            value = "proxy://wavefront-proxy.spring-petclinic.svc.cluster.local:2878"
           }
 
           port {
@@ -574,11 +558,6 @@ resource "kubernetes_deployment" "vets_service" {
             }
           }
 
-          env {
-            name  = "MANAGEMENT_METRICS_EXPORT_WAVEFRONT_URI"
-            value = "proxy://wavefront-proxy.spring-petclinic.svc.cluster.local:2878"
-          }
-
           port {
             container_port = 8080
           }
@@ -690,11 +669,6 @@ resource "kubernetes_deployment" "visits_service" {
                 key  = "mysql-root-password"
               }
             }
-          }
-
-          env {
-            name  = "MANAGEMENT_METRICS_EXPORT_WAVEFRONT_URI"
-            value = "proxy://wavefront-proxy.spring-petclinic.svc.cluster.local:2878"
           }
 
           port {
