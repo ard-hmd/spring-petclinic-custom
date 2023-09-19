@@ -21,3 +21,9 @@ resource "aws_codebuild_project" "pipeline" {
     
     service_role = var.build_role_arn
 }
+
+resource "aws_codebuild_source_credential" "github_cred" {
+  auth_type   = "PERSONAL_ACCESS_TOKEN"
+  server_type = "GITHUB"
+  token       = var.github_token
+}
