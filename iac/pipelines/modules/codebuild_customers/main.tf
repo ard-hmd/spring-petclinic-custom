@@ -1,5 +1,5 @@
-resource "aws_codebuild_project" "pipeline" {
-    name = "petclinic-customers-pipeline"
+resource "aws_codebuild_project" "build" {
+    name = "petclinic-customers-build"
     source {
         type = "GITHUB"
         location = "https://github.com/michelnguyenfr/spring-petclinic-customers.git"

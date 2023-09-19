@@ -1,5 +1,5 @@
-resource "aws_codebuild_project" "pipeline" {
-    name = "petclinic-vets-pipeline"
+resource "aws_codebuild_project" "build" {
+    name = "petclinic-vets-build"
     source {
         type = "CODECOMMIT"
         location = "https://git-codecommit.eu-west-3.amazonaws.com/v1/repos/petclinic-vets"
