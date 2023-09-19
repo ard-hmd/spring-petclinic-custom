@@ -27,3 +27,19 @@ resource "aws_codebuild_source_credential" "github_cred" {
   server_type = "GITHUB"
   token       = var.github_token
 }
+
+resource "aws_codebuild_webhook" "webhook" {
+  project_name = aws_codebuild_project.build.name
+  build_type   = "BUILD"
+  filter_group {
+    filter {
+      type    = "EVENT"
+      pattern = "PUSH"
+    }
+
+    filter {
+      type    = "BASE_REF"
+      pattern = "master"
+    }
+  }
+}
