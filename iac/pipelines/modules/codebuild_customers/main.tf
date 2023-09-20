@@ -22,13 +22,13 @@ resource "aws_codebuild_project" "build" {
 
         environment_variable {
           name  = "DOCKER_LOGIN"
-          type  = "PARAMETER"
+          type  = "PARAMETER_STORE"
           value = "PETCLINIC_DOCKER_USERNAME"
         }
 
         environment_variable {
           name  = "DOCKER_PASSWORD"
-          type  = "PARAMETER"
+          type  = "PARAMETER_STORE"
           value = "PETCLINIC_DOCKER_PASSWORD"
         }
     }
