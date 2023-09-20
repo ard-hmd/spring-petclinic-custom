@@ -13,6 +13,24 @@ resource "aws_codebuild_project" "build" {
         type                        = "LINUX_CONTAINER"
         image_pull_credentials_type = "CODEBUILD"
         privileged_mode             = true
+
+        environment_variable {
+          name  = "REPOSITORY_PREFIX"
+          type  = "PLAINTEXT"
+          value = var.repository_prefix
+        }
+
+        environment_variable {
+          name  = "DOCKER_LOGIN"
+          type  = "PARAMETER"
+          value = "PETCLINIC_DOCKER_USERNAME"
+        }
+
+        environment_variable {
+          name  = "DOCKER_PASSWORD"
+          type  = "PARAMETER"
+          value = "PETCLINIC_DOCKER_PASSWORD"
+        }
     }
 
     artifacts {
