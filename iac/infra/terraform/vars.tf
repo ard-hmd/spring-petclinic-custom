@@ -34,3 +34,6 @@ variable "private_subnets_cidr" {
   description = "CIDR blocks for Private Subnets"
 }
 
+variable "customersdb_password" {}
+variable "vetsdb_password" {}
+variable "visitsdb_password" {}

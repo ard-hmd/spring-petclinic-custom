@@ -11,6 +11,7 @@
 /target/
 
 # Terraform
+iac/infra/terraform/secrets.tfvars
 iac/infra/terraform/.terraform/
 iac/infra/terraform/*.tfstate
 iac/infra/terraform/*.tfstate.backup

@@ -63,21 +63,20 @@ output "db_instance_identifiers" {
  value       = module.rds_instances.db_instance_identifier
 }
 
+output "replica_db_instance_identifier" {
+  description = "The identifiers of the RDS replica instances"
+  value       = module.rds_replicas.replica_db_instance_identifier
+}
 
-# output "replica_db_instance_identifier" {
-#   description = "The identifiers of the RDS replica instances"
-#   value       = module.rds_replicas.replica_db_instance_identifier
-# }
+output "replica_db_instance_endpoint" {
+  description = "The endpoint of the RDS replica instances"
+  value       = module.rds_replicas.replica_db_instance_endpoint
+}
 
-# output "replica_db_instance_endpoint" {
-#   description = "The endpoint of the RDS replica instances"
-#   value       = module.rds_replicas.replica_db_instance_endpoint
-# }
-
-# output "replica_db_instance_arn" {
-#   description = "The ARN of the RDS replica instances"
-#   value       = module.rds_replicas.replica_db_instance_arn
-# }
+output "replica_db_instance_arn" {
+  description = "The ARN of the RDS replica instances"
+  value       = module.rds_replicas.replica_db_instance_arn
+}
 
 output "main_eks_cluster_name" {
   description = "The name of the EKS cluster from the main configuration"
