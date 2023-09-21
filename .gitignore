@@ -18,6 +18,7 @@ iac/infra/terraform/*.tfplan
 iac/infra/terraform/*.tfplan.backup
 iac/infra/terraform/crash.log
 iac/infra/terraform/.terraform.lock.hcl
+iac/k8s/
 
 # Local .terraform directories
 **/.terraform/*
@@ -43,3 +44,4 @@ override.tf.json
 *.bak
 .DS_Store
 .vscode/
+
