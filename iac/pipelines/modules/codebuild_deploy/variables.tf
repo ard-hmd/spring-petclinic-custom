@@ -11,7 +11,7 @@ variable "service_name" {
 }
 
 variable "repo_source" {
-  type = string
+  type = list(string)
   default = [
     "https://github.com/michelnguyenfr/spring-petclinic-api-gateway.git",
     "https://github.com/michelnguyenfr/spring-petclinic-customers.git",
