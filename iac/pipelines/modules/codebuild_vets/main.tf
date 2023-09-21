@@ -41,5 +41,23 @@ resource "aws_codebuild_webhook" "webhook" {
       type    = "HEAD_REF"
       pattern = "^refs/heads/master"
     }
+
+    filter {
+      type  = "FILE_PATH"
+      pattern = ".*yaml$"
+      exclude_matched_pattern = true
+    }
+
+    filter {
+      type  = "FILE_PATH"
+      pattern = ".*yml$"
+      exclude_matched_pattern = true
+    }
+
+    filter {
+      type  = "FILE_PATH"
+      pattern = ".*sh$"
+      exclude_matched_pattern = true
+    }
   }
 }
