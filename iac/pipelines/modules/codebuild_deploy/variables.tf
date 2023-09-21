@@ -19,3 +19,8 @@ variable "repo_source" {
     "https://github.com/michelnguyenfr/spring-petclinic-visits.git"
   ]
 }
+
+variable "environment" {
+  type = string
+  default = "dev"
+}
