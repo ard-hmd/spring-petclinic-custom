@@ -14,7 +14,7 @@ variable "env" {
   default     = ["dev", "qa", "prod"]
 }
 
-variable "source" {
+variable "repo_source" {
   type = string
   default = "https://github.com/michelnguyenfr/spring-petclinic-customers.git"
 }

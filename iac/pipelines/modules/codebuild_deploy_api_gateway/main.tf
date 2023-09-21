@@ -3,7 +3,7 @@ resource "aws_codebuild_project" "build" {
     name = ${var.name_prefix}${var.env[count.index]}
     source {
         type = "GITHUB"
-        location = var.source
+        location = var.repo_source
     }
 
     source_version = "refs/heads/master"
