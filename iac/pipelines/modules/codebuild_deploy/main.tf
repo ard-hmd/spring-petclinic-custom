@@ -1,9 +1,9 @@
 resource "aws_codebuild_project" "build" {
-    count = length(var.env)
-    name = "${var.name_prefix}${var.env[count.index]}"
+    count = length(var.service_name)
+    name = "petclinic-${var.service_name[count.index]}-deploy"
     source {
         type = "GITHUB"
-        location = var.repo_source
+        location = var.repo_source[count.index]
     }
 
     source_version = "refs/heads/master"
@@ -17,6 +17,12 @@ resource "aws_codebuild_project" "build" {
 
         environment_variable {
           name  = "REPOSITORY_PREFIX"
+          type  = "PLAINTEXT"
+          value = var.repository_prefix
+        }
+
+        environment_variable {
+          name  = "ENVIRONMENT"
           type  = "PLAINTEXT"
           value = var.repository_prefix
         }
