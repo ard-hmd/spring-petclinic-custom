@@ -62,19 +62,19 @@ resource "aws_codebuild_webhook" "webhook" {
 
     filter {
       type  = "FILE_PATH"
-      pattern = "*yaml$"
+      pattern = ".*yaml$"
       exclude_matched_pattern = true
     }
 
     filter {
       type  = "FILE_PATH"
-      pattern = "*yml$"
+      pattern = ".*yml$"
       exclude_matched_pattern = true
     }
 
     filter {
       type  = "FILE_PATH"
-      pattern = "*sh$"
+      pattern = ".*sh$"
       exclude_matched_pattern = true
     }
   }
