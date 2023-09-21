@@ -15,17 +15,17 @@ else
     echo "Waiting for 5 seconds to ensure all resources are released..."
     sleep 5
 
-    echo "Uninstalling MySQL for vets-db..."
-    helm uninstall vets-db -n spring-petclinic
+    # echo "Uninstalling MySQL for vets-db..."
+    # helm uninstall vets-db -n spring-petclinic
 
-    echo "Uninstalling MySQL for visits-db..."
-    helm uninstall visits-db -n spring-petclinic
+    # echo "Uninstalling MySQL for visits-db..."
+    # helm uninstall visits-db -n spring-petclinic
 
-    echo "Uninstalling MySQL for customers-db..."
-    helm uninstall customers-db -n spring-petclinic
+    # echo "Uninstalling MySQL for customers-db..."
+    # helm uninstall customers-db -n spring-petclinic
 
-    echo "Waiting for 5 seconds to ensure all MySQL instances are removed..."
-    sleep 5
+    # echo "Waiting for 5 seconds to ensure all MySQL instances are removed..."
+    # sleep 5
 
     echo "Deleting initial services configuration..."
     kubectl delete -f k8s/init-services

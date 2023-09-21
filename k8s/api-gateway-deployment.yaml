@@ -39,8 +39,9 @@ spec:
         resources:
           limits:
             memory: 1Gi
+            cpu: 500m
           requests:
-            cpu: 2000m
+            cpu: 500m
             memory: 1Gi
         env:
         - name: SPRING_PROFILES_ACTIVE

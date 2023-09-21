@@ -15,81 +15,87 @@ module "eks_cluster_nodegroup" {
   public_subnets_ids  = module.aws_vpc.public_subnets_ids
   private_subnets_ids = module.aws_vpc.private_subnets_ids
   eks_cluster_name    = module.eks_cluster.eks_cluster_name
-  node_groups = [
+
+  node_groups         = [
     {
-      name           = "nodegroup-ondemand"
+      name           = "nodegroup-ondemand-1"
       ami_type       = "AL2_x86_64"
-      instance_types = ["t3.xlarge"]
+      instance_types = ["t3.medium"]
       capacity_type  = "ON_DEMAND"
       disk_size      = 20
-    },
+      scaling_config = {
+        desired_size = 2
+        max_size     = 3
+        min_size     = 1
+      }
+    }
   ]
 
   depends_on = [module.eks_cluster]
 }
 
 module "rds_instances" {
-  source     = "github.com/ard-hmd/terraform-aws-rds.git"
-  aws_region = var.aws_region
-  database_configurations = [
-    {
-      identifier              = "customersdb"
-      allocated_storage       = 10
-      engine_version          = "5.7"
-      instance_class          = "db.t3.micro"
-      db_name                 = "customersdb"
-      db_username             = "admin"
-      db_password             = "password"
-      parameter_group_name    = "default.mysql5.7"
-      db_subnet_group_name    = module.aws_vpc.rds_subnet_group_name
-      skip_final_snapshot     = true
-      publicly_accessible     = false
-      backup_retention_period = 0
-      vpc_id                  = module.aws_vpc.vpc_id
-      allowed_cidrs           = [module.aws_vpc.vpc_cidr]
-      multi_az                = true
-      sg_name                 = "customers-db-sg"
-      sg_description          = "Security Group for customersdb"
-    },
-    {
-      identifier              = "vetsdb"
-      allocated_storage       = 10
-      engine_version          = "5.7"
-      instance_class          = "db.t3.micro"
-      db_name                 = "vetsdb"
-      db_username             = "admin"
-      db_password             = "password"
-      parameter_group_name    = "default.mysql5.7"
-      db_subnet_group_name    = module.aws_vpc.rds_subnet_group_name
-      skip_final_snapshot     = true
-      publicly_accessible     = false
-      backup_retention_period = 0
-      vpc_id                  = module.aws_vpc.vpc_id
-      allowed_cidrs           = [module.aws_vpc.vpc_cidr]
-      multi_az                = true
-      sg_name                 = "vets-db-sg"
-      sg_description          = "Security Group for vetsdb"
-    },
-    {
-      identifier              = "visitsdb"
-      allocated_storage       = 10
-      engine_version          = "5.7"
-      instance_class          = "db.t3.micro"
-      db_name                 = "visitsdb"
-      db_username             = "admin"
-      db_password             = "password"
-      parameter_group_name    = "default.mysql5.7"
-      db_subnet_group_name    = module.aws_vpc.rds_subnet_group_name
-      skip_final_snapshot     = true
-      publicly_accessible     = false
-      backup_retention_period = 0
-      vpc_id                  = module.aws_vpc.vpc_id
-      allowed_cidrs           = [module.aws_vpc.vpc_cidr]
-      multi_az                = true
-      sg_name                 = "visits-db-sg"
-      sg_description          = "Security Group for visitsdb"
-    },
-  ]
+ source     = "github.com/ard-hmd/terraform-aws-rds.git"
+ aws_region = var.aws_region
+ database_configurations = [
+   {
+     identifier              = "customersdb"
+     allocated_storage       = 10
+     engine_version          = "5.7"
+     instance_class          = "db.t3.micro"
+     db_name                 = "customersdb"
+     db_username             = "admin"
+     db_password             = "password"
+     parameter_group_name    = "default.mysql5.7"
+     db_subnet_group_name    = module.aws_vpc.rds_subnet_group_name
+     skip_final_snapshot     = true
+     publicly_accessible     = false
+     backup_retention_period = 0
+     vpc_id                  = module.aws_vpc.vpc_id
+     allowed_cidrs           = [module.aws_vpc.vpc_cidr]
+     multi_az                = true
+     sg_name                 = "customers-db-sg"
+     sg_description          = "Security Group for customersdb"
+   },
+   {
+     identifier              = "vetsdb"
+     allocated_storage       = 10
+     engine_version          = "5.7"
+     instance_class          = "db.t3.micro"
+     db_name                 = "vetsdb"
+     db_username             = "admin"
+     db_password             = "password"
+     parameter_group_name    = "default.mysql5.7"
+     db_subnet_group_name    = module.aws_vpc.rds_subnet_group_name
+     skip_final_snapshot     = true
+     publicly_accessible     = false
+     backup_retention_period = 0
+     vpc_id                  = module.aws_vpc.vpc_id
+     allowed_cidrs           = [module.aws_vpc.vpc_cidr]
+     multi_az                = true
+     sg_name                 = "vets-db-sg"
+     sg_description          = "Security Group for vetsdb"
+   },
+   {
+     identifier              = "visitsdb"
+     allocated_storage       = 10
+     engine_version          = "5.7"
+     instance_class          = "db.t3.micro"
+     db_name                 = "visitsdb"
+     db_username             = "admin"
+     db_password             = "password"
+     parameter_group_name    = "default.mysql5.7"
+     db_subnet_group_name    = module.aws_vpc.rds_subnet_group_name
+     skip_final_snapshot     = true
+     publicly_accessible     = false
+     backup_retention_period = 0 # Set this to 1 if you intend to create a replica
+     vpc_id                  = module.aws_vpc.vpc_id
+     allowed_cidrs           = [module.aws_vpc.vpc_cidr]
+     multi_az                = true
+     sg_name                 = "visits-db-sg"
+     sg_description          = "Security Group for visitsdb"
+   },
+ ]
 }
 
 

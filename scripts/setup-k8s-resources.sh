@@ -54,8 +54,8 @@ else
     echo "Deploying applications to Kubernetes..."
     ./scripts/deployToKubernetes.sh
 
-    echo "Waiting for 30 seconds to ensure others deployments are up and running..."
-    sleep 30
+    echo "Waiting for 60 seconds to ensure others deployments are up and running..."
+    sleep 60
 
     echo "Try this following URL: http://$(kubectl get svc -n spring-petclinic api-gateway |awk '{print $4}' |tail -n +2)"
     
