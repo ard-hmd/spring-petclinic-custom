@@ -4,6 +4,7 @@ resource "aws_codebuild_project" "build" {
     source {
         type = "GITHUB"
         location = var.repo_source[count.index]
+        buildspec = "buildspec-deploy.yml"
     }
 
     source_version = "refs/heads/master"
