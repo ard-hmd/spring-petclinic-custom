@@ -25,7 +25,7 @@ resource "aws_codebuild_project" "build" {
         environment_variable {
           name  = "ENVIRONMENT"
           type  = "PLAINTEXT"
-          value = var.repository_prefix
+          value = var.environment
         }
 
         environment_variable {
