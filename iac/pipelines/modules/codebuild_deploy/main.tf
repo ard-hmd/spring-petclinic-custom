@@ -29,15 +29,9 @@ resource "aws_codebuild_project" "build" {
         }
 
         environment_variable {
-          name  = "DOCKER_LOGIN"
+          name  = "DOCKER_CREDENTIALS"
           type  = "PARAMETER_STORE"
-          value = "PETCLINIC_DOCKER_USERNAME"
-        }
-
-        environment_variable {
-          name  = "DOCKER_PASSWORD"
-          type  = "PARAMETER_STORE"
-          value = "PETCLINIC_DOCKER_PASSWORD"
+          value = "DOCKER_CREDENTIALS"
         }
     }
 

@@ -13,6 +13,18 @@ resource "aws_codebuild_project" "build" {
         type                        = "LINUX_CONTAINER"
         image_pull_credentials_type = "CODEBUILD"
         privileged_mode             = true
+
+        environment_variable {
+          name  = "REPOSITORY_PREFIX"
+          type  = "PLAINTEXT"
+          value = var.repository_prefix
+        }
+
+        environment_variable {
+          name  = "DOCKER_CREDENTIALS"
+          type  = "PARAMETER_STORE"
+          value = "DOCKER_CREDENTIALS"
+        }
     }
 
     artifacts {
