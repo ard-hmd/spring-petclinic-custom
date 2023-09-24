@@ -21,6 +21,11 @@ resource "aws_iam_role_policy_attachment" "eks_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
+resource "aws_iam_role_policy_attachment" "s3_policy_attachment" {
+  role = aws_iam_role.build_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+}
+
 resource "aws_iam_role_policy_attachment" "petclinic-build-role-policy-attachment" {
   role = aws_iam_role.build_role.name
   policy_arn = aws_iam_policy.build_policy.arn
