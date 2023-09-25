@@ -85,9 +85,9 @@ resource "aws_codepipeline" "example" {
         ProjectName = var.pipelines[count.index].deploy
         EnvironmentVariables = [
           {
-            "name": "ENVIRONMENT",
-            "type": "PLAINTEXT",
-            "value": "prod"
+            name = "ENVIRONMENT"
+            type = "PLAINTEXT"
+            value = "prod"
           }
         ]
       }
