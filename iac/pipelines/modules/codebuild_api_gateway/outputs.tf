@@ -1,1 +1,1 @@
-output "id" { value = aws_codebuild_project.build.*.id }
+output "id" { value = aws_codebuild_project.build.id }
