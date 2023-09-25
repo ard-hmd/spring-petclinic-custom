@@ -57,16 +57,16 @@ resource "aws_codepipeline" "example" {
       provider = "CodeBuild"
       version = "1"
 
-      configuration = jsonencode({
+      configuration = {
         ProjectName = var.pipelines[count.index].deploy
-        EnvironmentVariables = [
+        EnvironmentVariables = "[
           {
             name = "ENVIRONMENT"
             type = "PLAINTEXT"
             value = "dev"
-          },
-        ]
-      })
+          }
+        ]"
+      }
 
       input_artifacts = ["BuildArtifact"]
     }
@@ -81,16 +81,16 @@ resource "aws_codepipeline" "example" {
       provider = "CodeBuild"
       version = "1"
 
-      configuration = jsonencode({
+      configuration = {
         ProjectName = var.pipelines[count.index].deploy
         EnvironmentVariables = [
           {
             name = "ENVIRONMENT"
             type = "PLAINTEXT"
             value = "prod"
-          },
+          }
         ]
-      })
+      }
 
       input_artifacts = ["BuildArtifact"]
     }
