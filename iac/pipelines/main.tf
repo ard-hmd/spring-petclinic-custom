@@ -47,3 +47,8 @@ module "codebuild_deploy" {
   build_role_arn = module.role_build.build_role_arn
   github_token = var.github_token
 }
+
+module "codepipeline" {
+  source = "./modules/codepipeline"
+  github_token = var.github_token
+}
