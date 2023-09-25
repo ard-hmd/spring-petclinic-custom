@@ -13,8 +13,8 @@ provider "aws" {
   secret_key = var.secret_key # la clé sécrète crée pour l'utilisateur qui sera utilisé par terraform
 }
 
-module "role_build" {
-  source = "./modules/role_build"
+module "roles" {
+  source = "./modules/roles"
   json_path = "./modules/role_build/build-policy.json"
 }
 
