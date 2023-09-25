@@ -18,24 +18,6 @@ module "roles" {
   json_path = "./modules/roles/build-policy.json"
 }
 
-module "codebuild_customers" {
-  source = "./modules/codebuild_customers"
-  build_role_arn = module.roles.build_role_arn
-  github_token = var.github_token
-}
-
-module "codebuild_visits" {
-  source = "./modules/codebuild_visits"
-  build_role_arn = module.roles.build_role_arn
-  github_token = var.github_token
-}
-
-module "codebuild_vets" {
-  source = "./modules/codebuild_vets"
-  build_role_arn = module.roles.build_role_arn
-  github_token = var.github_token
-}
-
 module "codebuild_api_gateway" {
   source = "./modules/codebuild_api_gateway"
   build_role_arn = module.roles.build_role_arn
