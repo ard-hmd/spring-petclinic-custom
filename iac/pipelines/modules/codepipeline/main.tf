@@ -1,4 +1,4 @@
-resource "aws_codepipeline" "example" {
+resource "aws_codepipeline" "pipeline" {
   count = length(var.pipelines)
 
   name = var.pipelines[count.index].name
@@ -52,7 +52,7 @@ resource "aws_codepipeline" "example" {
     name = "DeployDev"
     action {
       name = "DeployDevAction"
-      category = "Deploy"
+      category = "Build"
       owner = "AWS"
       provider = "CodeBuild"
       version = "1"
