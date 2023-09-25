@@ -5,24 +5,32 @@ variable "pipelines" {
       github_owner  = "michelnguyenfr"
       github_repo   = "spring-petclinic-customers"
       branch        = "main"
+      build         = "petclinic-customers-build"
+      deploy        = "petclinic-customers-deploy"
     },
     {
       name          = "pipeline-visits"
       github_owner  = "michelnguyenfr"
       github_repo   = "spring-petclinic-visits"
       branch        = "main"
+      build         = "petclinic-visits-build"
+      deploy        = "petclinic-visits-deploy"
     },
     {
       name          = "pipeline-vets"
       github_owner  = "michelnguyenfr"
       github_repo   = "spring-petclinic-vets"
       branch        = "main"
+      build         = "petclinic-vets-build"
+      deploy        = "petclinic-vets-deploy"
     },
     {
       name          = "pipeline-api-gateway"
       github_owner  = "michelnguyenfr"
       github_repo   = "spring-petclinic-api-gateway"
       branch        = "main"
+      build         = "petclinic-api-gateway-build"
+      deploy        = "petclinic-api-gateway-deploy"
     }
   ]
 }
