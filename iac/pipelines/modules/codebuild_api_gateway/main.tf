@@ -1,6 +1,6 @@
 resource "aws_codebuild_project" "build" {
     count = length(var.service_name)
-    name = "petclinic-${var.service_name[count.index]}-build-test"
+    name = petclinic-var.service_name[count.index]-build-test
     source {
         type = "GITHUB"
         location = var.repo_source[count.index]
