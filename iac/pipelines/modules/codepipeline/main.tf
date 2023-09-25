@@ -76,7 +76,7 @@ resource "aws_codepipeline" "pipeline" {
     name = "DeployProd"
     action {
       name = "DeployProdAction"
-      category = "Deploy"
+      category = "Build"
       owner = "AWS"
       provider = "CodeBuild"
       version = "1"
