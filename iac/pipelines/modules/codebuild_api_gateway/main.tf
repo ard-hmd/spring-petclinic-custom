@@ -1,9 +1,8 @@
 resource "aws_codebuild_project" "build" {
-    count = length(var.service_name)
-    name = petclinic-var.service_name[count.index]-build-test
+    name = "petclinic-api-gateway-build"
     source {
         type = "GITHUB"
-        location = var.repo_source[count.index]
+        location = "https://github.com/michelnguyenfr/spring-petclinic-api-gateway.git"
     }
 
     source_version = "refs/heads/master"
@@ -42,10 +41,7 @@ resource "aws_codebuild_source_credential" "github_cred" {
 }
 
 resource "aws_codebuild_webhook" "webhook" {
-  count = length(aws_codebuild_project.build)
-
-  project_name = aws_codebuild_project.build[count.index].name
-  
+  project_name = aws_codebuild_project.build.name
   build_type   = "BUILD"
   filter_group {
     filter {
