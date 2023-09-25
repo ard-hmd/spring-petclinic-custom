@@ -59,13 +59,13 @@ resource "aws_codepipeline" "example" {
 
       configuration = {
         ProjectName = var.pipelines[count.index].deploy
-        EnvironmentVariables = [
-          {
-            name = "ENVIRONMENT"
-            type = "PLAINTEXT"
-            value = "dev"
-          }
-        ]
+ #       EnvironmentVariables = [
+ #         {
+ #           name = "ENVIRONMENT"
+ #           type = "PLAINTEXT"
+ #           value = "dev"
+ #         }
+ #       ]
       }
 
       input_artifacts = ["BuildArtifact"]
@@ -83,13 +83,13 @@ resource "aws_codepipeline" "example" {
 
       configuration = {
         ProjectName = var.pipelines[count.index].deploy
-        EnvironmentVariables = [
-          {
-            name = "ENVIRONMENT"
-            type = "PLAINTEXT"
-            value = "prod"
-          }
-        ]
+#        EnvironmentVariables = [
+#          {
+#            name = "ENVIRONMENT"
+#            type = "PLAINTEXT"
+#            value = "prod"
+#          }
+#        ]
       }
 
       input_artifacts = ["BuildArtifact"]
