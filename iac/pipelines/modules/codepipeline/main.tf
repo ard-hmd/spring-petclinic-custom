@@ -57,7 +57,7 @@ resource "aws_codepipeline" "example" {
       provider = "CodeBuild"
       version = "1"
 
-      configuration = {
+      configuration = jsonencode({
         ProjectName = var.pipelines[count.index].deploy
         EnvironmentVariables = [
           {
@@ -66,7 +66,7 @@ resource "aws_codepipeline" "example" {
             value = "dev"
           },
         ]
-      }
+      })
 
       input_artifacts = ["BuildArtifact"]
     }
@@ -81,8 +81,8 @@ resource "aws_codepipeline" "example" {
       provider = "CodeBuild"
       version = "1"
 
-      configuration = {
-        ProjectName = "petclinic-visits-deploy"
+      configuration = jsonencode({
+        ProjectName = var.pipelines[count.index].deploy
         EnvironmentVariables = [
           {
             name = "ENVIRONMENT"
@@ -90,7 +90,7 @@ resource "aws_codepipeline" "example" {
             value = "prod"
           },
         ]
-      }
+      })
 
       input_artifacts = ["BuildArtifact"]
     }
