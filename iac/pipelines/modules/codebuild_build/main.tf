@@ -1,8 +1,9 @@
 resource "aws_codebuild_project" "build" {
-    name = "petclinic-vets-build"
+    count = length(var.service_name)
+    name = "petclinic-${var.service_name[count.index]}-build-test"
     source {
         type = "GITHUB"
-        location = "https://github.com/michelnguyenfr/spring-petclinic-vets.git"
+        location = var.repo_source[count.index]
     }
 
     source_version = "refs/heads/master"
@@ -41,7 +42,8 @@ resource "aws_codebuild_source_credential" "github_cred" {
 }
 
 resource "aws_codebuild_webhook" "webhook" {
-  project_name = aws_codebuild_project.build.name
+  count = length(var.service_name)
+  project_name = aws_codebuild_project.build[count.index].name
   build_type   = "BUILD"
   filter_group {
     filter {
@@ -72,4 +74,5 @@ resource "aws_codebuild_webhook" "webhook" {
       exclude_matched_pattern = true
     }
   }
+
 }
