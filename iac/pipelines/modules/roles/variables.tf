@@ -1,0 +1,1 @@
+variable "json_path" { type = string }

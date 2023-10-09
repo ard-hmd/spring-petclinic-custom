@@ -1,0 +1,1 @@
+output "id" { value = ["${aws_codebuild_project.build.*.id}"] }
